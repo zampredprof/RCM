@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PCM Personality Test — GitHub Pages</title>
+  <meta name="description" content="Почти профессиональная версия PCM-подобного теста: лендинг, инструкция, 45 уникальных ситуаций, ранжирование ответов, профиль, стресс-паттерны и PDF-отчёт." />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+  <style>
+    :root,[data-theme="light"]{--text-xs:clamp(.75rem,.7rem + .25vw,.875rem);--text-sm:clamp(.875rem,.8rem + .35vw,1rem);--text-base:clamp(1rem,.95rem + .25vw,1.125rem);--text-lg:clamp(1.125rem,1rem + .75vw,1.5rem);--text-xl:clamp(1.5rem,1.2rem + 1.25vw,2.25rem);--space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;--space-12:3rem;--space-16:4rem;--space-20:5rem;--color-bg:#f7f6f2;--color-surface:#fbfbf9;--color-surface-2:#f3f0ec;--color-surface-offset:#edeae5;--color-border:#d4d1ca;--color-divider:#dcd9d5;--color-text:#28251d;--color-text-muted:#66655f;--color-text-faint:#8f8d87;--color-text-inverse:#f9f8f4;--color-primary:#01696f;--color-primary-hover:#0c4e54;--color-primary-highlight:#d7e7e5;--color-warning:#964219;--color-error:#a12c7b;--color-success:#437a22;--radius-sm:.375rem;--radius-md:.75rem;--radius-lg:1rem;--radius-xl:1.25rem;--radius-full:9999px;--shadow-sm:0 1px 2px rgba(40,37,29,.06);--shadow-md:0 8px 24px rgba(40,37,29,.09);--shadow-lg:0 18px 48px rgba(40,37,29,.12);--font-body:'Avenir Next','Segoe UI','Helvetica Neue',Arial,sans-serif;--font-display:'Trebuchet MS','Arial Narrow','Avenir Next',Arial,sans-serif;--transition:180ms cubic-bezier(.16,1,.3,1);--content-default:1240px}
+    [data-theme="dark"]{--color-bg:#171614;--color-surface:#1c1b19;--color-surface-2:#22211f;--color-surface-offset:#2b2a28;--color-border:#393836;--color-divider:#31302e;--color-text:#e1dfda;--color-text-muted:#b3b0aa;--color-text-faint:#807d77;--color-text-inverse:#171614;--color-primary:#4f98a3;--color-primary-hover:#6caab3;--color-primary-highlight:#233233;--color-warning:#c47a52;--color-error:#d163a7;--color-success:#7eb45b;--shadow-sm:0 1px 2px rgba(0,0,0,.2);--shadow-md:0 8px 24px rgba(0,0,0,.32);--shadow-lg:0 18px 48px rgba(0,0,0,.45)}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased} body{margin:0;min-height:100dvh;font-family:var(--font-body);font-size:var(--text-base);line-height:1.6;background:radial-gradient(circle at 100% 0%,color-mix(in srgb,var(--color-primary) 9%,transparent),transparent 28%),linear-gradient(180deg,var(--color-bg),var(--color-surface));color:var(--color-text)} img,svg,canvas{display:block;max-width:100%} button,input,textarea,select{font:inherit;color:inherit} button{cursor:pointer} h1,h2,h3,h4{margin:0;line-height:1.12} p{margin:0} a{color:inherit} :focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+    .skip-link{position:absolute;left:-9999px}.skip-link:focus{left:1rem;top:1rem;background:var(--color-surface);padding:.75rem 1rem;border:1px solid var(--color-border);border-radius:var(--radius-md);z-index:999}
+    .app{max-width:var(--content-default);margin:0 auto;padding:var(--space-4)} .section{margin-top:var(--space-8)} .hidden{display:none!important} .muted{color:var(--color-text-muted)} .small{font-size:var(--text-sm)} .tiny{font-size:var(--text-xs)}
+    .shell,.panel,.card,.rank-item,.legend-card,.timeline-item,.score-card{background:color-mix(in srgb,var(--color-surface) 90%,transparent);backdrop-filter:blur(8px);border:1px solid color-mix(in srgb,var(--color-text) 8%,var(--color-border));border-radius:var(--radius-xl);box-shadow:var(--shadow-md)}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:var(--space-4);padding:var(--space-4) 0 var(--space-8)} .brand{display:flex;align-items:center;gap:var(--space-3);text-decoration:none} .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--color-primary-highlight),var(--color-surface-offset));display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--color-primary) 16%,var(--color-border));box-shadow:var(--shadow-sm)} .brand-mark{width:24px;height:24px;color:var(--color-primary)} .brand-copy strong{display:block;font-family:var(--font-display);font-size:var(--text-sm)} .brand-copy span{display:block;font-size:var(--text-xs);color:var(--color-text-muted)} .topbar-actions{display:flex;gap:var(--space-2);flex-wrap:wrap}
+    .ghost-btn,.theme-toggle,.chip-btn,.soft-btn,.rank-btn,.clear-btn{min-height:44px;padding:0 var(--space-4);border-radius:var(--radius-full);border:1px solid var(--color-border);background:var(--color-surface);transition:all var(--transition)} .ghost-btn:hover,.theme-toggle:hover,.chip-btn:hover,.soft-btn:hover,.rank-btn:hover,.clear-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)} .btn{min-height:48px;padding:0 var(--space-5);border:none;border-radius:var(--radius-full);font-weight:700;transition:all var(--transition)} .btn-primary{background:var(--color-primary);color:var(--color-text-inverse)} .btn-primary:hover{background:var(--color-primary-hover)} .btn-secondary{background:var(--color-surface-2);border:1px solid var(--color-border)} .btn[disabled]{opacity:.5;cursor:not-allowed}
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:var(--space-6)} .hero-main,.hero-side,.panel,.card{padding:var(--space-6)} .eyebrow{display:inline-flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-3);border-radius:var(--radius-full);background:var(--color-primary-highlight);color:var(--color-primary);font-size:var(--text-xs);font-weight:700;letter-spacing:.03em;text-transform:uppercase} h1{font-family:var(--font-display);font-size:var(--text-xl);max-width:13ch;margin-top:var(--space-4)} .hero p{margin-top:var(--space-4);max-width:66ch;color:var(--color-text-muted)}
+    .meta-grid,.mini-grid,.facts-grid,.legend-grid,.score-grid{display:grid;gap:var(--space-3)} .meta-grid{grid-template-columns:repeat(3,1fr)} .mini-grid{grid-template-columns:1fr 1fr} .facts-grid{grid-template-columns:repeat(4,1fr)} .legend-grid{grid-template-columns:repeat(2,1fr)} .score-grid{grid-template-columns:repeat(3,1fr)} .mini-card,.fact,.score-card,.stack-item,.rec-item,.legend-card,.timeline-item{padding:var(--space-4);border-radius:var(--radius-lg);background:var(--color-surface-2);border:1px solid var(--color-divider)} .fact strong,.score-card strong{display:block;font-family:var(--font-display);font-size:var(--text-lg)} .fact span,.score-card span{display:block;font-size:var(--text-xs);color:var(--color-text-muted)}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:var(--space-4);margin-bottom:var(--space-4);flex-wrap:wrap} .type-pills{display:flex;gap:var(--space-2);flex-wrap:wrap} .pill{padding:var(--space-2) var(--space-3);border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700;background:var(--color-surface-2);border:1px solid var(--color-divider)}
+    .stage{display:grid;grid-template-columns:minmax(0,1.18fr) 360px;gap:var(--space-6);align-items:start} .progress-row{display:flex;justify-content:space-between;gap:var(--space-3);align-items:center;margin-bottom:var(--space-4)} .progress-bar{height:10px;background:var(--color-surface-offset);border-radius:999px;overflow:hidden;border:1px solid var(--color-divider)} .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--color-primary),color-mix(in srgb,var(--color-primary) 70%,white));transition:width 260ms var(--transition)}
+    .question-title{font-size:var(--text-lg);font-weight:700;max-width:34ch} .question-meta{display:inline-flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--space-3)} .helper{margin-top:var(--space-4);padding:var(--space-4);border-radius:var(--radius-lg);background:var(--color-surface-2);border:1px dashed var(--color-divider)}
+    .rank-grid{display:grid;gap:var(--space-3);margin-top:var(--space-5)} .rank-item{padding:var(--space-4);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-3);align-items:center} .rank-copy strong{display:block} .rank-copy span{display:block;color:var(--color-text-muted);font-size:var(--text-sm)} .rank-controls{display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;justify-content:flex-end} .rank-badge{min-width:46px;height:46px;display:grid;place-items:center;border-radius:var(--radius-full);font-weight:800;background:var(--color-primary-highlight);color:var(--color-primary);border:1px solid color-mix(in srgb,var(--color-primary) 20%,var(--color-border))}
+    .controls{display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-5)} .stack-list,.rec-list,.timeline{display:grid;gap:var(--space-3);margin-top:var(--space-4)} .chart-wrap{position:relative;min-height:360px;padding-top:var(--space-4)} .hero-type{display:flex;justify-content:space-between;align-items:start;gap:var(--space-4);flex-wrap:wrap} .score-badge{padding:var(--space-2) var(--space-3);border-radius:var(--radius-full);background:var(--color-primary-highlight);color:var(--color-primary);font-size:var(--text-xs);font-weight:700}
+    .landing-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:var(--space-6)} .cta-row{display:flex;gap:var(--space-3);margin-top:var(--space-6);flex-wrap:wrap} .divider{height:1px;background:var(--color-divider);margin:var(--space-6) 0} .footer-note{margin:var(--space-8) 0 var(--space-4);text-align:center;font-size:var(--text-sm);color:var(--color-text-muted)}
+    @media (max-width:1024px){.hero,.landing-grid,.stage,.facts-grid{grid-template-columns:1fr}} @media (min-width:1025px){.app{max-width:1380px}.hero-main,.hero-side,.panel,.card{padding:var(--space-6)}} @media (max-width:720px){.app{padding:var(--space-3)} .hero-main,.hero-side,.panel,.card{padding:var(--space-5)} .meta-grid,.mini-grid,.legend-grid,.score-grid,.facts-grid{grid-template-columns:1fr} .rank-item{grid-template-columns:1fr} .rank-controls{justify-content:flex-start}}
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+<a href="#main" class="skip-link">Перейти к содержимому</a>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="#landingView" aria-label="PCM Profile Lab">
+      <div class="logo" aria-hidden="true"><svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 45V19h10.5c8 0 13 4.7 13 12.8S33.5 45 25.5 45H15Z" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M35 19h14v8H35m0 9h12" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="brand-copy"><strong>PCM Profile Lab</strong><span>Strict edition · public assessment site</span></div>
+    </a>
+    <div class="topbar-actions">
+      <button class="theme-toggle" data-theme-toggle aria-label="Переключить тему">◐</button>
+      <button class="ghost-btn hidden" id="restartBtn" type="button">Начать заново</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="section" id="landingView">
+      <div class="hero">
+        <article class="hero-main shell">
+          <span class="eyebrow">45 вопросов · 6 вариантов · ранжирование 1–5</span>
+          <h1>Строгая версия PCM‑подобного профиля с отчётом и интерпретацией</h1>
+          <p>Эта версия построена ближе к опубликованной логике PCM Profile: 45 ситуационных вопросов, шесть ответов на вопрос, ранжирование максимум пяти вариантов, профиль по всем шести типам, интерпретация базового типа, вероятной фазы и дистресс‑паттернов.</p>
+          <div class="cta-row">
+            <button class="btn btn-primary" id="goToInstructionsBtn" type="button">Начать тест</button>
+            <a class="soft-btn" href="#aboutTest">Как это устроено</a>
+          </div>
+          <div class="meta-grid" style="margin-top:var(--space-6)">
+            <div class="fact"><strong>45</strong><span>уникальных жизненных ситуаций</span></div>
+            <div class="fact"><strong>6</strong><span>типов PCM в итоговом профиле</span></div>
+            <div class="fact"><strong>PDF</strong><span>финальный отчёт для скачивания</span></div>
+          </div>
+        </article>
+        <aside class="hero-side shell">
+          <h2>Что получите в отчёте</h2>
+          <div class="timeline">
+            <div class="timeline-item"><strong>Базовый тип</strong><div class="small muted">Доминирующий стиль восприятия, коммуникации и повседневного ресурса.</div></div>
+            <div class="timeline-item"><strong>Вторичные типы</strong><div class="small muted">Ресурсы, которые усиливают гибкость и поведение в разных контекстах.</div></div>
+            <div class="timeline-item"><strong>Каналы контакта</strong><div class="small muted">Как говорить с собой и другими так, чтобы контакт был точнее.</div></div>
+            <div class="timeline-item"><strong>Дистресс‑паттерны</strong><div class="small muted">Ранние и усиленные сигналы перегруза с рекомендациями по саморегуляции.</div></div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="section landing-grid" id="aboutTest">
+        <article class="card">
+          <div class="section-head"><div><h2>Что делает эту версию строже</h2><p>Здесь нет повторяющихся шаблонов и простого одиночного выбора: каждая ситуация имеет собственную формулировку, а баллы начисляются по аккуратной нелинейной шкале рангов.</p></div></div>
+          <div class="facts-grid">
+            <div class="fact"><strong>Ранг 1</strong><span>5.0 баллов</span></div>
+            <div class="fact"><strong>Ранг 2</strong><span>3.5 балла</span></div>
+            <div class="fact"><strong>Ранг 3</strong><span>2.4 балла</span></div>
+            <div class="fact"><strong>Ранг 4</strong><span>1.5 балла</span></div>
+            <div class="fact"><strong>Ранг 5</strong><span>0.8 балла</span></div>
+            <div class="fact"><strong>Минимум</strong><span>3 ранга на вопрос</span></div>
+            <div class="fact"><strong>Максимум</strong><span>5 рангов на вопрос</span></div>
+            <div class="fact"><strong>Без ответов</strong><span>1 вариант можно не выбирать</span></div>
+          </div>
+        </article>
+        <article class="card">
+          <h2>Ограничения метода</h2>
+          <p class="muted">Это не официальный сертифицированный PCM Profile, а публичный инструмент, максимально приближенный к открыто описанной логике опросника и типологии. Он подходит для self‑reflection, HR‑MVP, коучинговой воронки и предварительного профилирования, но не заменяет официальное валидированное тестирование и разбор с PCM‑специалистом.</p>
+          <div class="divider"></div>
+          <div class="mini-grid">
+            <div class="mini-card"><strong>Подходит</strong><div class="small muted">Самодиагностика, развитие коммуникации, HR-пилот, лид‑магнит, обучающий продукт.</div></div>
+            <div class="mini-card"><strong>Не заменяет</strong><div class="small muted">Официальный PCM‑профиль, психометрику сертифицированного уровня и профессиональную супервизию.</div></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section hidden" id="instructionsView">
+      <div class="landing-grid">
+        <article class="card">
+          <span class="eyebrow">Инструкция</span>
+          <h2 style="margin-top:var(--space-4)">Как отвечать, чтобы результат был точнее</h2>
+          <div class="timeline">
+            <div class="timeline-item"><strong>1. Отвечайте о типичном поведении.</strong><div class="small muted">Не о том, какими вам “надо” быть, а о том, как вы действительно реагируете чаще всего.</div></div>
+            <div class="timeline-item"><strong>2. Ставьте минимум 3 ранга.</strong><div class="small muted">Можно проставить 3, 4 или 5 рангов. Один ответ можно оставить без оценки.</div></div>
+            <div class="timeline-item"><strong>3. Ранг 1 — самый похожий.</strong><div class="small muted">Ранг 5 — наименее похожий из тех, которые вы всё же выбрали.</div></div>
+            <div class="timeline-item"><strong>4. Не думайте слишком долго.</strong><div class="small muted">Лучше работает первый честный отклик, чем долгое конструирование желаемого образа.</div></div>
+            <div class="timeline-item"><strong>5. Ищите устойчивый стиль.</strong><div class="small muted">Ориентируйтесь не на исключения, а на то, что повторяется в работе, общении и стрессе.</div></div>
+          </div>
+          <div class="cta-row"><button class="btn btn-primary" id="startTestBtn" type="button">Перейти к вопросам</button><button class="btn btn-secondary" id="backToLandingBtn" type="button">Назад</button></div>
+        </article>
+        <article class="card">
+          <h2>Что будет в финале</h2>
+          <div class="stack-list">
+            <div class="stack-item"><strong>Структура личности</strong><span class="small muted">Рейтинг всех шести типов с визуальным радаром.</span></div>
+            <div class="stack-item"><strong>Базовый тип и вероятная фаза</strong><span class="small muted">Осторожная интерпретация без претензии на официальный статус.</span></div>
+            <div class="stack-item"><strong>Каналы и мотиваторы</strong><span class="small muted">Какие форматы общения и признания работают лучше.</span></div>
+            <div class="stack-item"><strong>PDF‑отчёт</strong><span class="small muted">Краткий профессионально оформленный файл для скачивания и отправки.</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section hidden" id="testView">
+      <div class="section-head">
+        <div><h2>Оценка</h2><p>Ниже — 45 ситуаций. Для каждой проставьте ранги тем реакциям, которые действительно на вас похожи.</p></div>
+        <div class="type-pills"><span class="pill">Логик</span><span class="pill">Упорный</span><span class="pill">Душевный</span><span class="pill">Деятель</span><span class="pill">Бунтарь</span><span class="pill">Мечтатель</span></div>
+      </div>
+      <div class="stage">
+        <section class="panel">
+          <div class="progress-row"><div><strong>Ход теста</strong><div class="tiny muted" id="progressText">Вопрос 1 из 45</div></div><div class="tiny muted" id="dimensionHint">Рабочие ситуации</div></div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <article class="card" style="margin-top:var(--space-4)">
+            <div class="question-meta" id="questionMeta">Категория</div>
+            <h3 class="question-title" id="questionTitle">Загрузка вопроса…</h3>
+            <div class="helper small muted">Проставьте ранги 1–5. На каждом вопросе минимум три ответа должны получить ранги. Один ответ можно оставить без ранга.</div>
+            <div class="rank-grid" id="rankGrid"></div>
+            <div class="controls"><button class="btn btn-secondary" id="prevBtn" type="button">Назад</button><button class="btn btn-primary" id="nextBtn" type="button" disabled>Далее</button></div>
+          </article>
+        </section>
+        <aside class="panel">
+          <h2>Контроль качества ответов</h2>
+          <div class="score-grid">
+            <div class="score-card"><span>Рангов сейчас</span><strong id="qualityAssigned">0</strong></div>
+            <div class="score-card"><span>Уникальность</span><strong id="qualityUnique">OK</strong></div>
+            <div class="score-card"><span>Готовность</span><strong id="qualityReady">Нет</strong></div>
+          </div>
+          <div class="stack-list" id="livePreview"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section hidden" id="actionView">
+      <div class="section-head"><div><h2>Практика по каждому типу</h2><p>Для каждого профиля доступны отдельные рекомендации: обратная связь, постановка задач, конфликт, похвала и коммуникация в стрессе.</p></div></div>
+      <div class="legend-grid" id="actionGrid"></div>
+    </section>
+
+    <section class="section hidden" id="resultsView">
+      <div class="section-head"><div><h2>Профиль и отчёт</h2><p>Итог показывает доминирующий тип, вероятную мотивационную фазу, вторичные ресурсы и рекомендации по саморегуляции.</p></div><div class="cta-row" style="margin-top:0"><button class="chip-btn" id="copyBtn" type="button">Скопировать вывод</button><button class="btn btn-primary" id="downloadPdfBtn" type="button">Скачать PDF</button></div></div>
+      <div class="landing-grid">
+        <article class="card">
+          <div class="hero-type"><div><div class="tiny muted">Базовый тип</div><h3 id="baseTypeName">—</h3></div><div class="score-badge" id="baseTypeScore">0%</div></div>
+          <p id="baseTypeDescription" class="muted" style="margin-top:1rem">Описание появится после завершения теста.</p>
+          <div class="stack-list" id="topThreeList"></div>
+          <div class="divider"></div>
+          <div class="stack-list" id="phaseList"></div>
+        </article>
+        <article class="card">
+          <h3>Радар структуры личности</h3>
+          <p class="muted small">Показатели относительны внутри вашего профиля и не являются клинической шкалой.</p>
+          <div class="chart-wrap"><canvas id="profileChart" aria-label="Радар PCM" role="img"></canvas></div>
+        </article>
+      </div>
+      <div class="section landing-grid" style="margin-top:var(--space-6)">
+        <article class="card"><h3>Каналы коммуникации</h3><div class="rec-list" id="channelsList"></div></article>
+        <article class="card"><h3>Стресс и саморегуляция</h3><div class="rec-list" id="stressList"></div></article>
+      </div>
+      <div class="section"><div class="section-head"><div><h3>Коммуникационные профили всех 6 типов</h3><p>Ниже — встроенная библиотека практических рекомендаций по управлению и коммуникации для каждого PCM‑профиля.</p></div></div><div class="legend-grid" id="guideGrid"></div></div><div class="section"><div class="legend-grid" id="legendGrid"></div></div>
+    </section>
+
+    <p class="footer-note">Публичный сайт с автономным фронтендом, интерактивным тестом и PDF‑отчётом без серверной части.</p>
+  </main>
+</div>
+
+<script>
+const typeMeta = {
+  thinker:{label:'Логик',code:'Thinker',color:'#01696f',traits:'Структурный, ответственный, ориентированный на факты, качество и предсказуемость.',motivators:'Признание компетентности, ясность ролей, порядок по времени и задачам.',channel:'Лучше работает логичный разговор с критериями, данными, вопросами и ясными ожиданиями.',needs:'Структура времени и признание за работу.',stress1:'Усиление контроля, придирчивость к деталям, тревога за качество.',stress2:'Критичность, обвинение в некомпетентности, жёсткое управление.',tips:['Формулируйте критерии результата','Согласовывайте приоритеты и сроки','Отмечайте качество анализа и надёжность'],selfCare:['Снижайте стандарт с идеального до достаточного','Разгружайте список дел','Отделяйте важное от полного контроля']},
+  persister:{label:'Упорный',code:'Persister',color:'#964219',traits:'Принципиальный, наблюдательный, убеждённый, ориентированный на ценности и качество.',motivators:'Уважение к убеждениям, смысл, миссия, доверие к зрелости и вкладу.',channel:'Эффективен разговор через позицию, ценности, качество и экспертное мнение.',needs:'Признание убеждений и посвящённости делу.',stress1:'Негативная оценочность, поиск несоответствий, спор за правоту.',stress2:'Морализаторство, жёсткая критика, крестовый поход против несогласных.',tips:['Признавайте принципиальность и вклад','Спрашивайте мнение и оценку','Показывайте смысл и этику решений'],selfCare:['Переводите суждение в запрос','Отделяйте принцип от человека','Ищите диалог, а не суд']},
+  harmonizer:{label:'Душевный',code:'Harmonizer',color:'#a12c7b',traits:'Тёплый, эмпатичный, внимательный к отношениям, атмосфере и комфорту.',motivators:'Личное признание, тепло, контакт, благодарность и ощущение нужности.',channel:'Лучше всего работает мягкий, тёплый, уважительный и человечный контакт.',needs:'Признание как личности и сенсорный комфорт.',stress1:'Сверхзабота, обида, усталость от невысказанных ожиданий.',stress2:'Самообесценивание, пассивная боль, накопленная эмоциональная перегрузка.',tips:['Начинайте с человеческого контакта','Давайте личную благодарность','Сохраняйте бережный тон'],selfCare:['Говорите о чувствах прямо','Не заменяйте границы заботой','Распознавайте усталость до срыва']},
+  promoter:{label:'Деятель',code:'Promoter',color:'#da7101',traits:'Энергичный, адаптивный, ориентированный на действие, влияние и практический выигрыш.',motivators:'Вызов, свобода манёвра, скорость, шанс влиять и побеждать.',channel:'Работает короткое, прямое и результативное общение без лишней теории.',needs:'Инциденты, возбуждение и возможность действовать.',stress1:'Импульсивность, форсирование, нетерпение, продавливание решений.',stress2:'Манипуляция, риск ради выигрыша, игнорирование последствий.',tips:['Говорите кратко и по делу','Показывайте следующий шаг и выгоду','Давайте пространство для инициативы'],selfCare:['Ставьте паузу перед рывком','Разделяйте срочное и важное','Снимайте напряжение через тело и действие']},
+  rebel:{label:'Бунтарь',code:'Rebel',color:'#7a39bb',traits:'Спонтанный, творческий, эмоционально откликающийся, любящий игру и яркий контакт.',motivators:'Игра, новизна, эмоциональная энергия, веселье и признание через контакт.',channel:'Лучше работает живой, эмоциональный, неформальный разговор с элементом игры.',needs:'Контакт и сенсорное возбуждение.',stress1:'Раздражительность, хаотичность, сопротивление, обесценивание.',stress2:'Сарказм, саботаж, вспышки протеста, резкие эмоциональные качели.',tips:['Добавляйте выбор и лёгкость','Разбивайте скучную рутину','Используйте короткие эмоциональные сигналы'],selfCare:['Чередуйте стимул и отдых','Снижайте перегрузку среды','Превращайте раздражение в конкретный запрос']},
+  imaginer:{label:'Мечтатель',code:'Imaginer',color:'#006494',traits:'Спокойный, рефлексивный, автономный, сильный в уединённой и воображаемой работе.',motivators:'Пространство, время подумать, ясные рамки и отсутствие лишнего шума.',channel:'Подходит спокойный темп, прямые инструкции и время на внутреннюю обработку.',needs:'Уединение и спокойная рефлексия.',stress1:'Отстранение, прокрастинация, снижение контакта и энергии.',stress2:'Выключение, пассивность, уход в недоступность и избегание участия.',tips:['Давайте ясные инструкции и паузу','Не перегружайте хаосом','Сохраняйте спокойный контакт'],selfCare:['Двигайтесь маленькими шагами','Создавайте тихую среду','Чередуйте автономность с короткими check-in']}
+};
+
+const scenarios = [
+['Рабочий старт','Вам передают новую задачу без готового шаблона. Что наиболее типично для вас?'],
+['Обратная связь','После презентации коллеги дают вам развёрнутый фидбек. Какая внутренняя реакция ближе всего?'],
+['Командная роль','В новой команде вы естественным образом чаще занимаете какую роль?'],
+['Напряжённый разговор','Когда в разговоре растёт напряжение, вы чаще всего...'],
+['Внутренняя мотивация','Что из этого сильнее всего включает вас в работу над задачей?'],
+['Жёсткий дедлайн','Когда сроки резко сжимаются, ваш типичный способ мобилизации — это...'],
+['Неопределённость','Если данных недостаточно, вы чаще всего опираетесь на...'],
+['Защита идеи','Когда нужно представить свою идею скептичной аудитории, вы скорее...'],
+['Формат общения','С каким стилем общения с вами обычно проще всего договориться?'],
+['Первые сигналы стресса','Какой ранний сигнал перегруза вы замечаете у себя раньше других?'],
+['Восстановление','После насыщенной недели лучше всего вас восстанавливает...'],
+['Смена планов','Если планы внезапно меняются, ваша первая реакция чаще такая...'],
+['Влияние на других','Какой способ влияния на людей вам ближе?'],
+['Совещания','На рабочем обсуждении ваша ценность чаще всего проявляется через...'],
+['Ошибка','Если в проекте обнаружена ошибка, вы сначала...'],
+['Запрос помощи','Когда вам нужна поддержка, какой формат запроса для вас естественнее?'],
+['Скучная рутина','Когда задача становится слишком однообразной, вы обычно...'],
+['Идеальный режим','В идеальном рабочем режиме вам особенно важно...'],
+['Признание','Какое признание переживается вами как наиболее ценное?'],
+['Перегрузка','Когда задач и людей становится слишком много, вы чаще...'],
+['Новые знакомства','На встрече с незнакомыми людьми вы чаще всего...'],
+['Приоритеты','Как вы чаще расставляете приоритеты в делах?'],
+['Сомнительное решение','Если решение кажется вам спорным или неэтичным, вы...'],
+['Чужие эмоции','Когда рядом сильные эмоции других людей, вы обычно...'],
+['Инициатива','Если видите шанс улучшить процесс, вы скорее...'],
+['Нестандартность','Когда нужен нестандартный ход, вы обычно...'],
+['Инструкции','Какой формат инструкции делает вас наиболее эффективным?'],
+['Поддержка близкого','Когда близкому человеку тяжело, вы чаще всего...'],
+['Справедливость','Если замечаете несправедливость, ваша типичная реакция — это...'],
+['Риск','Ваше отношение к риску чаще выглядит так...'],
+['Быт и порядок','В повседневной жизни дома вам ближе...'],
+['Обучение','Как вам легче осваивать новую тему или навык?'],
+['Короткий перерыв','Какой короткий перерыв обычно восстанавливает вас лучше всего?'],
+['Среда','Какая среда помогает вам работать наилучшим образом?'],
+['Планирование недели','Когда вы смотрите на предстоящую неделю, вы чаще...'],
+['Трудный человек','Если человек ведёт себя трудно и раздражающе, вы...'],
+['Переключение задач','Когда нужно переключиться между задачами, вы...'],
+['Драйвер','Что чаще всего толкает вас вперёд изнутри?'],
+['Ожидание ответа','Если решение зависит не от вас и нужно ждать, вы...'],
+['Просьба со стороны','Когда кто-то просит у вас помощи в неудобный момент, вы...'],
+['Под давлением','Под сильным давлением вы начинаете говорить и действовать...'],
+['Сильный ресурс','Какой свой ресурс вы ощущаете самым устойчивым?'],
+['Личное пространство','Что для вас означает по-настоящему комфортное пространство?'],
+['Восприятие успеха','Когда вы чувствуете, что день удался, обычно это потому что...'],
+['Финальная самооценка','Какой вариант лучше всего описывает ваш типичный способ быть с людьми и задачами?']
+];
+
+const answerVariants = [
+  {type:'thinker', options:[
+    'Сначала собираю факты, уточняю критерии и выстраиваю последовательный план.',
+    'Нуждаюсь в ясности ожиданий, логике и понятной системе оценки.',
+    'Беру на себя функцию структуры: сроки, роли, логика, качество.',
+    'Разбираю, что именно происходит, и пытаюсь вернуть разговор в рациональное русло.',
+    'Меня включает ощущение компетентности, ясной рамки и хорошо организованного процесса.',
+    'Усиливаю контроль над качеством, структурой и критическими деталями.'
+  ]},
+  {type:'persister', options:[
+    'Сверяю задачу со своими принципами, качеством и тем, насколько это правильно.',
+    'Важнее всего, уважают ли мою позицию, опыт и зрелость взгляда.',
+    'Становлюсь тем, кто держит стандарты, смысл и принципиальную линию.',
+    'Чаще защищаю ценности, поднимаю вопрос качества и корректности.',
+    'Меня включает смысл, миссия, уважение к убеждениям и признание верности делу.',
+    'Начинаю замечать, что не так, критиковать отклонения и настаивать на правильном.'
+  ]},
+  {type:'harmonizer', options:[
+    'Сначала ощущаю, как это повлияет на людей, атмосферу и отношения.',
+    'Важнее всего тон, бережность и то, чувствую ли я тёплое отношение.',
+    'Чаще соединяю людей, поддерживаю контакт и смягчаю острые углы.',
+    'Пытаюсь сохранить связь, снизить напряжение и не ранить людей.',
+    'Меня включает благодарность, тёплый контакт и чувство, что я важна или важен как человек.',
+    'Перегружаюсь эмоционально, начинаю уставать от напряжения и невысказанных ожиданий.'
+  ]},
+  {type:'promoter', options:[
+    'Сразу ищу быстрый практический ход и двигаю дело через действие.',
+    'Мне проще, когда разговор короткий, прямой и сразу ведёт к результату.',
+    'Чаще разгоняю группу, беру риск и двигаю решение вперёд.',
+    'Фокусируюсь на том, как быстро закрыть вопрос и продвинуться дальше.',
+    'Меня включает вызов, шанс выиграть, повлиять и быстро увидеть эффект.',
+    'Форсирую решения, давлю на скорость и могу стать резче обычного.'
+  ]},
+  {type:'rebel', options:[
+    'Сначала реагирую живо, интуитивно и ищу интересный, нескучный заход.',
+    'Лучше всего работает лёгкий, эмоциональный, неформальный и живой контакт.',
+    'Приношу энергию, креативный взгляд, юмор и нестандартные реакции.',
+    'Могу резко эмоционально откликнуться, протестовать или шуткой менять тон разговора.',
+    'Меня включает игра, интерес, новизна и чувство эмоциональной искры.',
+    'Становлюсь раздражительным, хаотичным, саркастичным или начинаю саботировать рутину.'
+  ]},
+  {type:'imaginer', options:[
+    'Сначала беру дистанцию, чтобы спокойно представить картину и обдумать её внутри.',
+    'Мне легче, когда есть тишина, ясные шаги и время на внутреннюю обработку.',
+    'Чаще работаю автономно, глубоко и без лишней внешней суеты.',
+    'Скорее отстраняюсь, чтобы не перегреться и сначала всё переварить внутри.',
+    'Меня включает пространство, спокойствие, автономия и возможность не спешить с откликом.',
+    'Под перегрузкой отключаюсь, замедляюсь, откладываю и ухожу из лишнего контакта.'
+  ]}
+];
+
+const perScenarioIndex = [0,1,2,3,4,5,0,1,1,5,4,3,2,2,0,1,4,4,1,5,4,0,1,2,3,4,1,2,1,3,0,0,4,4,0,3,5,4,5,2,3,2,4,1,2];
+const questions = scenarios.map((item, idx) => ({
+  id: idx + 1,
+  category: item[0],
+  title: item[1],
+  answers: answerVariants.map(group => ({
+    type: group.type,
+    text: group.options[perScenarioIndex[idx]],
+    help: typeMeta[group.type].label
+  }))
+}));
+
+
+const communicationGuides = {
+  thinker:{management:'Предпочтителен структурный, предсказуемый и уважительный стиль управления: ясные роли, критерии качества, сроки, автономия в анализе и минимум хаотичных разворотов в последний момент.',trustWords:['структура','критерии','срок','логика','план','качество','приоритет','ответственность','точность','результат'],phrasing:['Давайте уточним критерии результата.','Вот факты, сроки и ограничения.','Какой вариант вы считаете наиболее логичным?','Зафиксируем шаги и ответственность.'],tone:'Спокойная, деловая, собранная, без суеты и лишней эмоциональной драматизации.',mistakes:['Размытые задачи без критериев','Срочные хаотичные изменения без контекста','Давление вместо логики','Игнорирование качества и времени человека'],scripts:['Нам нужен результат к пятнице; вот критерии качества и ограничения.','Посмотрите данные и предложите оптимальную последовательность шагов.','Я ценю, что вы держите систему и замечаете слабые места.']},
+  persister:{management:'Лучше работает уважительный демократичный стиль с признанием экспертности, позиции и ценностного вклада человека.',trustWords:['принцип','позиция','смысл','ценности','уважение','мнение','качество','вклад','доверие','последовательность'],phrasing:['Мне важно ваше мнение по этому решению.','Насколько это соответствует нашим принципам?','Я ценю вашу последовательность и качество позиции.','Давайте сверим решение со смыслом и стандартом.'],tone:'Серьёзная, уважительная, зрелая, без снисходительности и пустой дипломатии.',mistakes:['Обесценивание убеждений','Формальный тон без уважения','Манипуляция вместо честного обсуждения','Требование лояльности без смысла'],scripts:['Как вы оцениваете это решение с точки зрения качества и принципов?','Ваш взгляд поможет не потерять важные стандарты.','Мне важно, чтобы здесь был не только результат, но и корректный способ его достижения.']},
+  harmonizer:{management:'Эффективен поддерживающий и человечный стиль управления, где есть личный контакт, доброжелательность и безопасная атмосфера.',trustWords:['спасибо','ценю','поддержка','забота','вместе','комфорт','отношения','доверие','важно','бережно'],phrasing:['Спасибо, я правда ценю ваш вклад.','Мне важно, чтобы вам было ок в этом процессе.','Давайте обсудим это спокойно и по-человечески.','Как вы себя чувствуете в этой ситуации?'],tone:'Тёплая, мягкая, принимающая, но при этом ясная; без холодности и резкости.',mistakes:['Сухая безличность','Жёсткая критика без контакта','Игнорирование эмоционального фона','Использование человека только как ресурса'],scripts:['Спасибо, что вы это удержали; для команды это действительно важно.','Хочу обсудить задачу бережно и понятно, чтобы вам было комфортно двигаться дальше.','Если что-то вас перегружает, лучше скажите прямо — найдём более удобный формат.']},
+  promoter:{management:'Лучше работает прямой, короткий и результативный стиль с пространством для инициативы и ощутимым полем действия.',trustWords:['результат','сразу','цель','выигрыш','сделать','быстро','влияние','ход','суть','действие'],phrasing:['Суть такая: нужен результат к...','Вот рамка, дальше действуйте свободно.','Какой самый быстрый рабочий ход вы видите?','Берите и делайте — мне важен итог.'],tone:'Уверенная, короткая, энергичная, без долгих вступлений и размазывания смысла.',mistakes:['Длинные теоретические подводки','Микроменеджмент','Слишком много ограничений без свободы манёвра','Неясная выгода или отсутствие цели'],scripts:['Нужен практический результат к завтрашнему вечеру; выберите самый быстрый путь.','Я не буду расписывать лишнее — вот задача, рамки и ожидаемый эффект.','Если видите более сильный ход, предлагайте и запускайте.']},
+  rebel:{management:'Наиболее эффективен живой, вовлекающий и гибкий стиль, в котором есть контакт, энергия, вариативность и ощущение игры.',trustWords:['интересно','давай','идея','классно','живо','по‑новому','выбор','легко','прикольно','попробуем'],phrasing:['Давай попробуем вот так.','Как тебе эта идея?','Сделаем это живее и интереснее.','Какой вариант тебе больше нравится?'],tone:'Лёгкая, эмоциональная, тёплая, живая; без холодной сухости и слишком формального давления.',mistakes:['Скучная канцелярщина','Монотонность и перегруз правилами','Только критика без контакта','Игнорирование потребности в интересе и выборе'],scripts:['Смотри, есть два варианта — какой тебе больше заходит?','Давай сделаем это не только правильно, но и живо, чтобы не умереть от скуки.','Мне нравится твой креативный взгляд; давай из него соберём рабочий формат.']},
+  imaginer:{management:'Предпочтителен спокойный, ясный и ненавязчивый стиль: конкретные инструкции, предсказуемость, личное пространство и время на внутреннюю обработку.',trustWords:['спокойно','по шагам','время','пространство','подумать','ясно','без спешки','структурно','тихо','понятно'],phrasing:['Вот задача по шагам.','Можно ответить не сразу, возьмите время подумать.','Спокойно посмотрите и вернитесь с выводом.','Сейчас важно просто понять последовательность.'],tone:'Ровная, тихая, ненапористая, ясная; без хаоса, многословия и резких эмоциональных качелей.',mistakes:['Давление на немедленный отклик','Шумное хаотичное обсуждение','Избыточная эмоциональность','Слишком много параллельных вводных'],scripts:['Вот три шага и срок; спокойно посмотрите и дайте ответ позже.','Не нужно включаться мгновенно — важнее вдумчивое решение.','Если будет удобнее, можете сначала проработать это самостоятельно, а потом коротко сверимся.']}
+};
+
+const actionGuides = {
+  thinker:{feedback:'Давайте факты, примеры и критерии. Начинайте с того, что получилось, затем спокойно обозначайте разрыв между ожиданием и результатом.',tasks:'Ставьте задачу через цель, критерии, приоритет и срок. Хорошо работает чек-лист и письменное подтверждение договорённостей.',conflict:'Держите разговор в фактах, не ускоряйте и не давите. Помогает пауза, возврат к данным и чёткое разделение мнений и фактов.',praise:'Хвалите конкретно: за анализ, точность, надёжность, продуманность и соблюдение стандарта.',stress:'При стрессе сокращайте объём информации, давайте структуру, не перегружайте срочностью и оставляйте время на обработку.'},
+  persister:{feedback:'Сначала признайте вклад и качество позиции, затем обсуждайте разницу во взглядах. Важно уважение и корректность.',tasks:'Покажите смысл задачи, стандарты качества и почему это важно. Лучше, если человек понимает принцип и рамку.',conflict:'Не спорьте “кто прав”, а возвращайтесь к ценностям, стандартам и корректному способу решения. Тон должен быть взрослым и уважительным.',praise:'Хвалите за принципиальность, надёжность, качество и верность стандартам.',stress:'В стрессе не обесценивайте убеждения и не давите авторитетом. Нужен честный диалог без морализаторства.'},
+  harmonizer:{feedback:'Начинайте с поддержки и благодарности, затем мягко объясняйте, что стоит улучшить. Критика должна звучать бережно.',tasks:'Формулируйте задачу по-человечески, с пониманием контекста и без сухой резкости. Важно, чтобы человек чувствовал поддержку.',conflict:'Сначала снизьте эмоциональное напряжение, дайте почувствовать безопасность и только потом обсуждайте разницу.',praise:'Хвалите за тепло, заботу, умение поддерживать людей и создавать атмосферу.',stress:'В стрессе не используйте холодный тон и не игнорируйте эмоции. Дайте признание, паузу и понятный мягкий маршрут.'},
+  promoter:{feedback:'Говорите кратко, прямо и по делу. Сначала результат, потом один-два конкретных пункта улучшения.',tasks:'Давайте цель, рамку, срок и свободу действий. Чем меньше лишней теории, тем лучше.',conflict:'Не затягивайте разговор, переходите к сути и следующим действиям. Хорошо работает краткая, твёрдая и уважительная линия.',praise:'Хвалите за скорость, смелость, находчивость, влияние и результативность.',stress:'Под давлением лучше говорить коротко и давать выбор между несколькими быстрыми решениями, а не читать нотации.'},
+  rebel:{feedback:'Соединяйте обратную связь с живым контактом, короткостью и ощущением игры. Начинайте с того, что понравилось, затем говорите, что можно сделать иначе.',tasks:'Подавайте задачу динамично, с выбором и элементом новизны. Важны азарт, движение и отсутствие скуки.',conflict:'Снимайте напряжение через живой контакт, юмор и возможность выйти из жёсткой схемы. Не превращайте спор в формальность.',praise:'Хвалите ярко, живо и искренне: за идеи, энергию, нестандартность и способность зажечь других.',stress:'В стрессе не задавливайте правилами и монотонностью. Лучше коротко признать эмоцию и сразу дать живой выход в действие.'},
+  imaginer:{feedback:'Давайте спокойную, ясную и не торопящую обратную связь. Сначала обозначьте, что именно наблюдаете, затем что нужно скорректировать.',tasks:'Формулируйте задачу по шагам, без лишнего шума и резкого давления. Полезны письменные инструкции и время на обдумывание.',conflict:'Снижайте интенсивность, говорите тише, делайте паузы и не требуйте немедленной реакции. Помогает структура и дистанция.',praise:'Хвалите за вдумчивость, спокойствие, автономность, глубину и способность работать без суеты.',stress:'В стрессе не форсируйте ответ и не обрушивайте поток требований. Лучше дать время, ясный план и безопасное пространство.'}
+};
+function createGuideBlock(typeKey, titlePrefix=''){ const g=communicationGuides[typeKey], m=typeMeta[typeKey]; const card=document.createElement('article'); card.className='legend-card'; card.innerHTML=`<h3>${titlePrefix}${m.label}</h3><p class="small muted"><strong>Стиль управления:</strong> ${g.management}</p><p class="small muted"><strong>Интонация:</strong> ${g.tone}</p><p class="small muted"><strong>Слова‑триггеры доверия:</strong> ${g.trustWords.join(', ')}</p><p class="small muted"><strong>Рекомендуемые формулировки:</strong> ${g.phrasing.join(' ')}</p><p class="small muted"><strong>Ошибки коммуникации:</strong> ${g.mistakes.join('; ')}</p><p class="small muted"><strong>Мини‑скрипты:</strong><br>${g.scripts.map(x=>'• '+x).join('<br>')}</p>`; return card; }
+
+const state = { current:0, answers:Array(questions.length).fill(null).map(()=>({})), chart:null, summary:'', report:null };
+const weights = {1:5.0,2:3.5,3:2.4,4:1.5,5:0.8};
+const views = { landing:document.getElementById('landingView'), instructions:document.getElementById('instructionsView'), test:document.getElementById('testView'), results:document.getElementById('resultsView') };
+const el = {
+  progressText:document.getElementById('progressText'), progressFill:document.getElementById('progressFill'), dimensionHint:document.getElementById('dimensionHint'), questionMeta:document.getElementById('questionMeta'), questionTitle:document.getElementById('questionTitle'), rankGrid:document.getElementById('rankGrid'), prevBtn:document.getElementById('prevBtn'), nextBtn:document.getElementById('nextBtn'), livePreview:document.getElementById('livePreview'), qualityAssigned:document.getElementById('qualityAssigned'), qualityUnique:document.getElementById('qualityUnique'), qualityReady:document.getElementById('qualityReady'), restartBtn:document.getElementById('restartBtn'), baseTypeName:document.getElementById('baseTypeName'), baseTypeScore:document.getElementById('baseTypeScore'), baseTypeDescription:document.getElementById('baseTypeDescription'), topThreeList:document.getElementById('topThreeList'), phaseList:document.getElementById('phaseList'), channelsList:document.getElementById('channelsList'), stressList:document.getElementById('stressList'), legendGrid:document.getElementById('legendGrid'), guideGrid:document.getElementById('guideGrid'), actionGrid:document.getElementById('actionGrid'), copyBtn:document.getElementById('copyBtn'), downloadPdfBtn:document.getElementById('downloadPdfBtn') };
+
+function showView(name){ Object.values(views).forEach(v=>v.classList.add('hidden')); views[name].classList.remove('hidden'); document.getElementById('restartBtn').classList.toggle('hidden', name==='landing' || name==='instructions'); window.scrollTo({top:0,behavior:'smooth'}); }
+function currentMap(){ return state.answers[state.current]; }
+function ranks(){ return Object.values(currentMap()).filter(Boolean); }
+function isValidCurrent(){ const r=ranks(); return r.length>=3 && r.length<=5 && new Set(r).size===r.length; }
+
+function setRank(answerIndex, rank){ const map=currentMap(); Object.keys(map).forEach(k=>{ if(map[k]===rank) delete map[k];}); if(map[answerIndex]===rank) delete map[answerIndex]; else map[answerIndex]=rank; renderQuestion(); renderLivePreview(); }
+function clearRank(answerIndex){ delete currentMap()[answerIndex]; renderQuestion(); renderLivePreview(); }
+
+function renderQuestion(){
+  const q=questions[state.current];
+  el.progressText.textContent=`Вопрос ${state.current+1} из ${questions.length}`;
+  el.progressFill.style.width=`${((state.current+1)/questions.length)*100}%`;
+  el.dimensionHint.textContent=q.category;
+  el.questionMeta.textContent=`${q.category} · ситуация ${q.id}`;
+  el.questionTitle.textContent=q.title;
+  el.rankGrid.innerHTML='';
+  q.answers.forEach((answer, index)=>{
+    const rank=currentMap()[index];
+    const row=document.createElement('div');
+    row.className='rank-item';
+    row.innerHTML=`<div class="rank-copy"><strong>${typeMeta[answer.type].label}</strong><span>${answer.text}</span></div><div class="rank-controls"><div class="rank-badge">${rank || '—'}</div>${[1,2,3,4,5].map(n=>`<button type="button" class="rank-btn" data-answer="${index}" data-rank="${n}">${n}</button>`).join('')}<button type="button" class="clear-btn" data-clear="${index}">сброс</button></div>`;
+    if(rank){ row.style.borderColor='var(--color-primary)'; row.style.background='var(--color-primary-highlight)'; }
+    el.rankGrid.appendChild(row);
+  });
+  el.rankGrid.querySelectorAll('[data-rank]').forEach(btn=>btn.addEventListener('click',()=>setRank(btn.dataset.answer, Number(btn.dataset.rank))));
+  el.rankGrid.querySelectorAll('[data-clear]').forEach(btn=>btn.addEventListener('click',()=>clearRank(btn.dataset.clear)));
+  el.prevBtn.disabled=state.current===0;
+  el.nextBtn.disabled=!isValidCurrent();
+  el.nextBtn.textContent=state.current===questions.length-1?'Показать профиль':'Далее';
+}
+
+function renderLivePreview(){
+  const used=ranks().sort((a,b)=>a-b);
+  el.qualityAssigned.textContent=String(used.length);
+  el.qualityUnique.textContent=new Set(used).size===used.length?'OK':'Нет';
+  el.qualityReady.textContent=isValidCurrent()?'Да':'Нет';
+  el.livePreview.innerHTML='';
+  const info=document.createElement('div'); info.className='stack-item'; info.innerHTML=`<strong>Текущее качество ответа</strong><span class="small muted">Минимум 3 ранга, максимум 5, без повторения одинаковых рангов.</span>`; el.livePreview.appendChild(info);
+  if(used.length){ const node=document.createElement('div'); node.className='stack-item'; node.innerHTML=`<strong>Использованные ранги</strong><span class="small muted">${used.join(', ')}</span>`; el.livePreview.appendChild(node); }
+}
+
+function compute(){
+  const totals=Object.fromEntries(Object.keys(typeMeta).map(k=>[k,0]));
+  state.answers.forEach((map, qIndex)=>{
+    questions[qIndex].answers.forEach((answer, aIndex)=>{ const rank=map[aIndex]; if(weights[rank]) totals[answer.type]+=weights[rank]; });
+  });
+  const max=Math.max(...Object.values(totals));
+  const ordered=Object.entries(totals).map(([key,raw])=>({ key, raw:+raw.toFixed(2), percent:Math.round((raw/max)*100) })).sort((a,b)=>b.raw-a.raw);
+  const [base, second, third]=ordered;
+  const phase = second.percent >= 86 ? second.key : base.key;
+  const phaseConfidence = second.percent >= 92 ? 'высокая' : second.percent >= 86 ? 'умеренная' : 'низкая';
+  return { ordered, base, second, third, phase, phaseConfidence };
+}
+
+function createRec(title, text, bullets){ const div=document.createElement('div'); div.className='rec-item'; div.innerHTML=`<strong>${title}</strong><p class="small muted">${text}</p><div class="tiny">${bullets.map(x=>`• ${x}`).join('<br>')}</div>`; return div; }
+
+function renderChart(ordered){
+  const ctx=document.getElementById('profileChart');
+  if(state.chart) state.chart.destroy();
+  state.chart=new Chart(ctx,{type:'radar',data:{labels:ordered.map(x=>typeMeta[x.key].label),datasets:[{label:'Профиль PCM',data:ordered.map(x=>x.percent),fill:true,backgroundColor:'rgba(1,105,111,.16)',borderColor:getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim(),pointBackgroundColor:ordered.map(x=>typeMeta[x.key].color),pointRadius:4,borderWidth:2}]},options:{maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,suggestedMax:100,ticks:{display:false},grid:{color:'rgba(120,120,120,.18)'},angleLines:{color:'rgba(120,120,120,.18)'},pointLabels:{color:getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim(),font:{size:13,family:'Satoshi'}}}}}});
+}
+
+function renderResults(){
+  const result=compute(); state.report=result;
+  const baseMeta=typeMeta[result.base.key];
+  el.baseTypeName.textContent=`${baseMeta.label} · ${baseMeta.code}`;
+  el.baseTypeScore.textContent=`${result.base.percent}%`;
+  el.baseTypeDescription.textContent=`${baseMeta.traits} Психологические потребности: ${baseMeta.needs}`;
+  el.topThreeList.innerHTML='';
+  [result.base, result.second, result.third].forEach((item, i)=>{ const m=typeMeta[item.key]; const node=document.createElement('div'); node.className='stack-item'; node.innerHTML=`<strong>${i===0?'Базовый тип':i===1?'Вторичный тип':'Третий ресурс'} — ${m.label}</strong><span class="small muted">${item.percent}% · ${m.traits}</span>`; el.topThreeList.appendChild(node); });
+  el.phaseList.innerHTML='';
+  const phaseMeta=typeMeta[result.phase];
+  const phaseBlock=document.createElement('div'); phaseBlock.className='stack-item'; phaseBlock.innerHTML=`<strong>Вероятная мотивационная фаза — ${phaseMeta.label}</strong><span class="small muted">Оценка уверенности: ${result.phaseConfidence}. В открытых описаниях PCM Base и Phase различаются: Base отражает устойчивый стиль восприятия и коммуникации, а Phase связана с психологическими потребностями, мотивацией и выраженными distress sequences; без официального инструмента и квалифицированного разбора здесь уместна только осторожная вероятностная интерпретация.</span>`; el.phaseList.appendChild(phaseBlock);
+  const distressBlock=document.createElement('div'); distressBlock.className='stack-item'; distressBlock.innerHTML=`<strong>Предполагаемая дистресс‑линия фазы</strong><span class="small muted">1-я степень: ${phaseMeta.stress1}  2-я степень: ${phaseMeta.stress2}</span>`; el.phaseList.appendChild(distressBlock);
+  el.channelsList.innerHTML=''; [result.base, result.second, result.third].forEach(item=>{ const m=typeMeta[item.key]; el.channelsList.appendChild(createRec(m.label, m.channel, m.tips)); });
+  el.stressList.innerHTML=''; [result.base, result.second, result.third].forEach(item=>{ const m=typeMeta[item.key]; el.stressList.appendChild(createRec(m.label, `Ранний стресс: ${m.stress1}`, [m.stress2, ...m.selfCare])); });
+  el.guideGrid.innerHTML=''; result.ordered.forEach((item, idx)=>{ el.guideGrid.appendChild(createGuideBlock(item.key, idx===0?'Приоритет 1 — ':idx===1?'Приоритет 2 — ':idx===2?'Приоритет 3 — ':'')); }); Object.keys(typeMeta).filter(k=>!result.ordered.map(x=>x.key).includes(k)).forEach(k=>el.guideGrid.appendChild(createGuideBlock(k)));
+  el.actionGrid.innerHTML=''; Object.keys(typeMeta).forEach(k=>{ const g=actionGuides[k], m=typeMeta[k]; const card=document.createElement('article'); card.className='legend-card'; card.innerHTML=`<h3>${m.label}</h3><p class="small muted"><strong>Как давать обратную связь:</strong> ${g.feedback}</p><p class="small muted"><strong>Как ставить задачи:</strong> ${g.tasks}</p><p class="small muted"><strong>Как вести конфликт:</strong> ${g.conflict}</p><p class="small muted"><strong>Как хвалить:</strong> ${g.praise}</p><p class="small muted"><strong>В стрессе:</strong> ${g.stress}</p></article>`; el.actionGrid.appendChild(card); });
+  el.legendGrid.innerHTML=''; result.ordered.forEach(item=>{ const m=typeMeta[item.key]; const card=document.createElement('article'); card.className='legend-card'; card.innerHTML=`<h3>${m.label} — ${item.percent}%</h3><p class="small muted">${m.traits}</p><ul><li><strong>Потребности:</strong> ${m.needs}</li><li><strong>Канал:</strong> ${m.channel}</li><li><strong>Ранний стресс:</strong> ${m.stress1}</li><li><strong>Усиленный стресс:</strong> ${m.stress2}</li></ul>`; el.legendGrid.appendChild(card); });
+  renderChart(result.ordered);
+  state.summary=`PCM-профиль: базовый тип — ${baseMeta.label}; вторичные — ${typeMeta[result.second.key].label} и ${typeMeta[result.third.key].label}; вероятная фаза — ${phaseMeta.label}.`;
+  showView('results');
+}
+
+function wrapText(doc, text, x, y, maxWidth, lineHeight){ const lines=doc.splitTextToSize(text, maxWidth); lines.forEach(line=>{ doc.text(line, x, y); y+=lineHeight; }); return y; }
+function downloadPdf(){
+  if(!state.report || !window.jspdf) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'pt', format:'a4' });
+  const left=40, right=555, width=515; let y=48;
+  const r=state.report, base=typeMeta[r.base.key], second=typeMeta[r.second.key], third=typeMeta[r.third.key], phase=typeMeta[r.phase];
+  doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.text('PCM Profile Lab — краткий отчёт', left, y); y+=24;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); y=wrapText(doc,'Этот PDF создан публичным PCM-подобным сайтом и не является официальным сертифицированным PCM Profile. Интерпретация Phase и distress выполнена в осторожном приближении на основе открыто описанной логики PCM.', left, y, width, 14); y+=12;
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.text(`Базовый тип: ${base.label} (${r.base.percent}%)`, left, y); y+=18;
+  doc.setFont('helvetica','normal'); doc.setFontSize(11); y=wrapText(doc,`${base.traits} Психологические потребности: ${base.needs}`, left, y, width, 15); y+=10;
+  doc.setFont('helvetica','bold'); doc.text('Вторичные типы', left, y); y+=16; doc.setFont('helvetica','normal'); y=wrapText(doc,`2-й тип: ${second.label} (${r.second.percent}%). 3-й тип: ${third.label} (${r.third.percent}%).`, left, y, width, 15); y+=10;
+  doc.setFont('helvetica','bold'); doc.text('Вероятная фаза', left, y); y+=16; doc.setFont('helvetica','normal'); y=wrapText(doc,`${phase.label}. Уровень уверенности: ${r.phaseConfidence}. Ранний стресс: ${phase.stress1}. Усиленный стресс: ${phase.stress2}.`, left, y, width, 15); y+=12;
+  doc.setFont('helvetica','bold'); doc.text('Каналы коммуникации', left, y); y+=16; doc.setFont('helvetica','normal'); [r.base, r.second, r.third].forEach(item=>{ const m=typeMeta[item.key]; y=wrapText(doc,`${m.label}: ${m.channel}`, left, y, width, 15); y+=6; }); y+=8;
+  doc.setFont('helvetica','bold'); doc.text('Саморегуляция и стресс', left, y); y+=16; doc.setFont('helvetica','normal'); [r.base, r.second, r.third].forEach(item=>{ const m=typeMeta[item.key]; y=wrapText(doc,`${m.label}: ${m.selfCare.join('; ')}.`, left, y, width, 15); y+=6; });
+  if(y>690){ doc.addPage(); y=48; }
+  y+=10; doc.setFont('helvetica','bold'); doc.text('Полная структура', left, y); y+=16; doc.setFont('helvetica','normal'); r.ordered.forEach(item=>{ const m=typeMeta[item.key]; y=wrapText(doc,`${m.label}: ${item.percent}% — ${m.traits}`, left, y, width, 15); y+=5; });
+  y+=18; doc.setFont('helvetica','bold'); doc.text('Практика коммуникации', left, y); y+=16; doc.setFont('helvetica','normal'); Object.keys(typeMeta).forEach(k=>{ const g=actionGuides[k], m=typeMeta[k]; y=wrapText(doc, `${m.label}: обратная связь — ${g.feedback}`, left, y, width, 14); y=wrapText(doc, `задачи — ${g.tasks}`, left, y+2, width, 14); y=wrapText(doc, `конфликт — ${g.conflict}`, left, y+2, width, 14); y=wrapText(doc, `похвала — ${g.praise}`, left, y+2, width, 14); y=wrapText(doc, `стресс — ${g.stress}`, left, y+2, width, 14); y+=8; if(y>740){ doc.addPage(); y=48; } }); doc.save('pcm-profile-report.pdf');
+}
+
+el.prevBtn.addEventListener('click',()=>{ if(state.current>0){ state.current--; renderQuestion(); renderLivePreview(); }});
+el.nextBtn.addEventListener('click',()=>{ if(!isValidCurrent()) return; if(state.current<questions.length-1){ state.current++; renderQuestion(); renderLivePreview(); } else { renderResults(); } });
+document.getElementById('goToInstructionsBtn').addEventListener('click',()=>showView('instructions'));
+document.getElementById('backToLandingBtn').addEventListener('click',()=>showView('landing'));
+document.getElementById('startTestBtn').addEventListener('click',()=>{ showView('test'); renderQuestion(); renderLivePreview(); });
+el.restartBtn.addEventListener('click',()=>{ state.current=0; state.answers=Array(questions.length).fill(null).map(()=>({})); state.summary=''; state.report=null; if(state.chart) state.chart.destroy(); showView('landing'); renderQuestion(); renderLivePreview(); });
+el.copyBtn.addEventListener('click',async()=>{ try{ await navigator.clipboard.writeText(state.summary); el.copyBtn.textContent='Скопировано'; setTimeout(()=>el.copyBtn.textContent='Скопировать вывод',1600);}catch{ el.copyBtn.textContent='Ошибка'; setTimeout(()=>el.copyBtn.textContent='Скопировать вывод',1600);} });
+el.downloadPdfBtn.addEventListener('click',downloadPdf);
+document.querySelector('[data-theme-toggle]').addEventListener('click',()=>{ const root=document.documentElement; const next=root.getAttribute('data-theme')==='dark'?'light':'dark'; root.setAttribute('data-theme',next); if(!views.results.classList.contains('hidden') && state.report) renderResults(); });
+
+showView('landing');
+renderQuestion();
+renderLivePreview();
+</script>
+</body>
+</html>
